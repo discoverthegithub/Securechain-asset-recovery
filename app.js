@@ -1,3 +1,4 @@
+// Trigger redeploy: minor comment for Railway
 const dotenv = require('dotenv');
 dotenv.config();
 
