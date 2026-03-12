@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | SecureChain</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF4A1C;
+            --primary-dark: #D93B12;
+            --primary-glow: rgba(255, 74, 28, 0.4);
+            --secondary: #FFFFFF;
+            --accent: #FF4A1C;
+            --bg-dark: #0a0a0a;
+            --bg-card: #111111;
+            --text-primary: #FFFFFF;
+            --text-secondary: #AAAAAA;
+            --text-muted: #888888;
+            --border: rgba(255, 255, 255, 0.08);
+            --gradient-primary: linear-gradient(135deg, #FF4A1C, #FF6B3D);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { height: 100%; }
+        body { min-height: 100%; font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
+
+        body {
+            min-height: 100vh; background: var(--bg-dark);
+            display: flex; align-items: center; justify-content: center;
+            padding: 24px; position: relative; overflow-x: hidden;
+        }
+
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(ellipse at 20% 20%, rgba(255, 74, 28, 0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse at 80% 80%, rgba(255, 74, 28, 0.05) 0%, transparent 50%);
+            z-index: 0;
+        }
+
+        #gridBg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0;
+            background-size: 50px 50px;
+            background-image: linear-gradient(to right, rgba(255, 74, 28, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 74, 28, 0.03) 1px, transparent 1px);
+            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+            animation: gridMove 20s linear infinite;
+        }
+        @keyframes gridMove { 0% { background-position: 0 0; } 100% { background-position: 50px 50px; } }
+
+        .orb { position: fixed; border-radius: 50%; filter: blur(80px); z-index: 0; animation: orbDrift 12s ease-in-out infinite; }
+        .orb-1 { width: 400px; height: 400px; background: rgba(255, 74, 28, 0.1); top: -100px; right: -100px; }
+        .orb-2 { width: 300px; height: 300px; background: rgba(255, 107, 61, 0.06); bottom: -80px; left: -80px; animation-delay: -6s; }
+        @keyframes orbDrift { 0%, 100% { transform: translate(0,0) scale(1); } 33% { transform: translate(30px,-20px) scale(1.05); } 66% { transform: translate(-20px,15px) scale(0.95); } }
+
+        canvas#particleCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+
+        /* Wide two-panel layout */
+        .login-container {
+            width: 100%; max-width: 900px; position: relative; z-index: 1;
+            display: flex; min-height: 520px;
+            animation: cardSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0; transform: translateY(30px);
+        }
+        @keyframes cardSlideUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* Left branding panel */
+        .brand-panel {
+            flex: 1; background: linear-gradient(135deg, #FF4A1C 0%, #D93B12 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 48px 40px; position: relative; overflow: hidden;
+        }
+        .brand-panel::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+        .brand-panel .brand-icon {
+            width: 80px; height: 80px; background: rgba(255,255,255,0.15);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.2rem; color: #fff; margin-bottom: 28px; border: 2px solid rgba(255,255,255,0.3);
+        }
+        .brand-panel h1 {
+            font-family: 'Outfit', sans-serif; font-size: 2rem; font-weight: 900;
+            color: #fff; text-align: center; margin-bottom: 12px; letter-spacing: -0.5px;
+        }
+        .brand-panel p {
+            color: rgba(255,255,255,0.8); font-size: 0.95rem; text-align: center;
+            max-width: 260px; line-height: 1.6;
+        }
+        .brand-panel .brand-features {
+            margin-top: 32px; display: flex; flex-direction: column; gap: 12px;
+        }
+        .brand-panel .brand-features .feat {
+            display: flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.9); font-size: 0.85rem; font-weight: 500;
+        }
+        .brand-panel .brand-features .feat i {
+            width: 24px; height: 24px; background: rgba(255,255,255,0.2); display: flex;
+            align-items: center; justify-content: center; font-size: 0.7rem;
+        }
+
+        /* Right form panel */
+        .form-panel {
+            flex: 1; background: rgba(17, 17, 17, 0.95); backdrop-filter: blur(24px);
+            border: 1px solid var(--border); border-left: none;
+            padding: 40px 40px; display: flex; flex-direction: column; justify-content: center;
+            position: relative; overflow: hidden;
+        }
+        .form-panel::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: var(--gradient-primary); display: none; }
+
+        .back-link {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--text-muted); text-decoration: none; font-size: 0.85rem;
+            margin-bottom: 20px; transition: all 0.3s; font-weight: 600;
+        }
+        .back-link:hover { color: var(--primary); transform: translateX(-4px); }
+
+        .card-title {
+            font-family: 'Outfit', sans-serif; font-size: 1.6rem; font-weight: 800;
+            margin-bottom: 6px; color: var(--primary); letter-spacing: -0.5px;
+        }
+        .block-reveal-wrapper { position: relative; display: inline-block; padding: 0 4px; }
+        .block-reveal-wrapper::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--primary); transform-origin: left; transform: scaleX(0); z-index: 2;
+            animation: blockSweep 1.2s cubic-bezier(0.8, -0.1, 0.2, 1) 0.3s forwards;
+        }
+        .block-reveal-text { opacity: 0; position: relative; z-index: 1; animation: textAppear 0.1s 0.9s forwards; }
+        @keyframes blockSweep { 0% { transform-origin: left; transform: scaleX(0); } 40% { transform-origin: left; transform: scaleX(1); } 60% { transform-origin: right; transform: scaleX(1); } 100% { transform-origin: right; transform: scaleX(0); } }
+        @keyframes textAppear { 100% { opacity: 1; } }
+
+        .card-subtitle { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 28px; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-wrapper { position: relative; display: flex; align-items: center; }
+        .input-icon { position: absolute; left: 14px; color: var(--text-muted); font-size: 0.95rem; transition: color 0.3s; z-index: 2; }
+
+        .form-control {
+            width: 100%; padding: 12px 14px 12px 44px;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border); border-radius: 0;
+            color: var(--text-primary); font-size: 0.9rem; font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.3s ease; outline: none;
+        }
+        .form-control::placeholder { color: var(--text-muted); }
+        .form-control:focus { border-color: var(--primary); background: rgba(255, 74, 28, 0.04); box-shadow: 0 0 0 4px rgba(255, 74, 28, 0.1); }
+        .input-wrapper:focus-within .input-icon { color: var(--primary); }
+
+        .btn-login {
+            width: 100%; padding: 12px; background: var(--primary); color: #111;
+            border: none; border-radius: 0; font-size: 0.85rem; font-weight: 800;
+            font-family: 'Plus Jakarta Sans', sans-serif; cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 20px var(--primary-glow);
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            margin-top: 4px; position: relative; overflow: hidden;
+            letter-spacing: 1px; text-transform: uppercase;
+        }
+        .btn-login::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s ease; }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 8px 32px var(--primary-glow); }
+        .btn-login:hover::before { left: 100%; }
+        .btn-login:active { transform: translateY(0); }
+
+        .divider { display: flex; align-items: center; gap: 16px; margin: 20px 0; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        .footer-links { text-align: center; }
+        .footer-links a { text-decoration: none; color: var(--primary); font-weight: 600; font-size: 0.85rem; transition: all 0.3s; }
+        .footer-links a:hover { color: #FF6B3D; }
+        .footer-links .text-muted { color: var(--text-muted); font-size: 0.85rem; }
+        .forgot-link { display: block; text-align: center; margin-bottom: 12px; }
+        .copyright { text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 0.75rem; }
+
+        /* Alert messages */
+        .alert {
+            padding: 12px 16px; margin-bottom: 20px; font-size: 0.85rem; font-weight: 500;
+            border-left: 3px solid; display: flex; align-items: center; gap: 10px;
+        }
+        .alert-success {
+            background: rgba(34, 197, 94, 0.08); border-color: #22c55e; color: #22c55e;
+        }
+        .alert-error {
+            background: rgba(239, 68, 68, 0.08); border-color: #ef4444; color: #ef4444;
+        }
+
+        /* Mobile: stack vertically */
+        @media (max-width: 768px) {
+            .login-container { flex-direction: column; max-width: 460px; min-height: auto; }
+            .brand-panel { padding: 32px 24px; }
+            .brand-panel h1 { font-size: 1.5rem; }
+            .brand-panel .brand-features { display: none; }
+            .form-panel { border-left: 1px solid var(--border); border-top: none; padding: 32px 24px; }
+            .form-panel::before { display: block; }
+        }
+    </style>
+    <link rel="stylesheet" href="/css/page-transition.css">
+</head>
+<body>
+    <div id="gridBg"></div>
+    <canvas id="particleCanvas"></canvas>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+
+    <div class="login-container">
+        <!-- Left Branding Panel -->
+        <div class="brand-panel">
+            <div class="brand-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <h1>SecureChain</h1>
+            <p>Your decentralized gateway to asset recovery and digital security.</p>
+            <div class="brand-features">
+                <div class="feat"><i class="fas fa-lock"></i> End-to-end encryption</div>
+                <div class="feat"><i class="fas fa-link"></i> Blockchain-powered recovery</div>
+                <div class="feat"><i class="fas fa-clock"></i> Dead-man switch automation</div>
+                <div class="feat"><i class="fas fa-users"></i> Trusted beneficiary system</div>
+            </div>
+        </div>
+
+        <!-- Right Form Panel -->
+        <div class="form-panel">
+            <a href="/" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+            <h3 class="card-title">
+                <span class="block-reveal-wrapper"><span class="block-reveal-text">Welcome Back</span></span>
+            </h3>
+            <p class="card-subtitle">Sign in to your SecureChain account</p>
+
+            <% if (typeof message !== 'undefined' && message) { %>
+                <div class="alert alert-<%= messageType === 'success' ? 'success' : 'error' %>">
+                    <i class="fas fa-<%= messageType === 'success' ? 'check-circle' : 'exclamation-circle' %>"></i>
+                    <%= message %>
+                </div>
+            <% } %>
+
+            <form action="/user/login" method="POST">
+                <div class="form-group">
+                    <label for="username" class="form-label">Username</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-arrow-right"></i> Sign In
+                </button>
+            </form>
+
+            <div class="divider">or</div>
+
+            <div class="footer-links">
+                <a href="/user/forgot-password" class="forgot-link">Forgot password?</a>
+                <span class="text-muted">Don't have an account?</span>
+                <a href="/user/register"> Sign up</a>
+            </div>
+
+            <div class="copyright">
+                &copy; 2025 SecureChain. All rights reserved.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('particleCanvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+            resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+            class Particle {
+                constructor() { this.reset(); }
+                reset() {
+                    this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 0.5; this.speedX = (Math.random() - 0.5) * 0.4; this.speedY = (Math.random() - 0.5) * 0.4;
+                    this.opacity = Math.random() * 0.4 + 0.1;
+                    this.color = Math.random() > 0.5 ? `rgba(255, 74, 28, ${this.opacity})` : `rgba(255, 107, 61, ${this.opacity})`;
+                }
+                update() { this.x += this.speedX; this.y += this.speedY; if (this.x < 0 || this.x > canvas.width) this.speedX *= -1; if (this.y < 0 || this.y > canvas.height) this.speedY *= -1; }
+                draw() { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = this.color; ctx.fill(); }
+            }
+            for (let i = 0; i < 50; i++) particles.push(new Particle());
+            function connectParticles() {
+                for (let a = 0; a < particles.length; a++) {
+                    for (let b = a + 1; b < particles.length; b++) {
+                        const dx = particles[a].x - particles[b].x, dy = particles[a].y - particles[b].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 120) { ctx.strokeStyle = `rgba(255, 74, 28, ${0.06 * (1 - dist / 120)})`; ctx.lineWidth = 0.5; ctx.beginPath(); ctx.moveTo(particles[a].x, particles[a].y); ctx.lineTo(particles[b].x, particles[b].y); ctx.stroke(); }
+                    }
+                }
+            }
+            function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); particles.forEach(p => { p.update(); p.draw(); }); connectParticles(); requestAnimationFrame(animate); }
+            animate();
+        }
+    </script>
+    <script src="/js/page-transition.js"></script>
+</body>
+</html>

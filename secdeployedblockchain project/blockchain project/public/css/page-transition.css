@@ -1,0 +1,74 @@
+/* ======= GOODFELLAS PAGE TRANSITION ======= */
+.gf-transition {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    pointer-events: none;
+}
+
+/* Panel starts VISIBLE — covers screen on page load, then JS wipes it away */
+.gf-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #FF4A1C;
+}
+
+.gf-brand {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #050B14;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    z-index: 2;
+    white-space: nowrap;
+}
+
+.gf-brand i {
+    font-size: 1.4rem;
+}
+
+/* After reveal is done, hide everything */
+.gf-transition.hidden .gf-panel,
+.gf-transition.hidden .gf-brand {
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* ──── CLICK: instant cover ──── */
+.gf-transition.covering .gf-panel,
+.gf-transition.covering .gf-brand {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ──── NEW PAGE: wipe panel away to reveal content ──── */
+.gf-transition.revealing .gf-panel {
+    animation: gfReveal 0.4s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+}
+
+.gf-transition.revealing .gf-brand {
+    animation: gfFade 0.2s ease-in forwards;
+}
+
+@keyframes gfReveal {
+    0%   { clip-path: inset(0 0 0 0); }
+    100% { clip-path: inset(0 100% 0 0); }
+}
+
+@keyframes gfFade {
+    to { opacity: 0; }
+}

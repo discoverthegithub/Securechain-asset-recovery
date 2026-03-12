@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureChain | Decentralized Asset Recovery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/css/about.css">
+    <style>
+        /* Shared Background Effects from Home Page */
+        #interactiveGrid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            background-size: 50px 50px;
+            background-image:
+                linear-gradient(to right, rgba(0, 240, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 240, 255, 0.05) 1px, transparent 1px);
+            transform: perspective(500px) rotateX(60deg) translateY(-100px) translateZ(-200px);
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 50px 50px;
+            }
+        }
+
+        .ambient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+            animation: float 20s infinite ease-in-out alternate;
+        }
+
+        .orb-1 {
+            top: -10%;
+            left: -10%;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(0, 240, 255, 0.12) 0%, transparent 60%);
+        }
+
+        .orb-2 {
+            bottom: -20%;
+            right: -10%;
+            width: 70vw;
+            height: 70vw;
+            background: radial-gradient(circle, rgba(58, 134, 255, 0.1) 0%, transparent 60%);
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            top: 40%;
+            left: 40%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, rgba(0, 180, 216, 0.08) 0%, transparent 60%);
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(5%, 5%) scale(1.05);
+            }
+
+            100% {
+                transform: translate(-5%, -5%) scale(0.95);
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/css/page-transition.css">
+</head>
+
+<body>
+    <!-- Background Effects -->
+    <div id="interactiveGrid"></div>
+    <div id="mouseGlow"
+        style="position: fixed; width: 400px; height: 400px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, rgba(0, 240, 255, 0.15) 0%, transparent 70%); transform: translate(-50%, -50%); z-index: -1; transition: opacity 0.3s; opacity: 0;">
+    </div>
+    <div class="ambient-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+    <!-- Floating Navbar -->
+    <script>
+        function closeNav() {
+            var n = document.querySelector('.nav-links');
+            if (n) { n.classList.remove('active'); n.style.top = '-100vh'; }
+        }
+        function toggleNav() {
+            var n = document.querySelector('.nav-links');
+            if (n) { n.style.top = ''; n.classList.toggle('active'); }
+        }
+    </script>
+    <header id="mainHeader" class="floating-nav">
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="logo-text">SecureChain</div>
+            </a>
+
+            <button class="mobile-menu-btn" onclick="toggleNav()">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <nav class="nav-links">
+                <!-- Mobile Navbar Header -->
+                <div class="mobile-menu-header mobile-only">
+                    <a href="/" class="logo">
+                        <div class="logo-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="logo-text">SecureChain</div>
+                    </a>
+                    <button class="close-menu-btn" onclick="closeNav()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <a href="/#features" class="nav-link" onclick="closeNav()"><i class="fas fa-layer-group mobile-nav-icon"></i> Features</a>
+                <a href="/user/about" class="nav-link" onclick="closeNav()"><i class="fas fa-users mobile-nav-icon"></i> About Us</a>
+                <a href="/#how-it-works" class="nav-link" onclick="closeNav()"><i class="fas fa-cogs mobile-nav-icon"></i> How it Works</a>
+                <a href="/user/login" class="nav-link mobile-only" onclick="closeNav()"><i class="fas fa-sign-in-alt mobile-nav-icon"></i>
+                    Sign In</a>
+                <a href="/user/register" class="btn btn-primary mobile-only" onclick="closeNav()">
+                    <i class="fas fa-user-plus" style="margin-right: 8px;"></i> Create Account
+                </a>
+            </nav>
+            <div class="nav-overlay" onclick="closeNav()"></div>
+
+            <div class="nav-actions">
+                <a href="/user/login" class="nav-link" style="margin-right: 12px; border:none; padding:12px; height:auto;">Sign In</a>
+                <a href="/user/register" class="btn-split">
+                    <span class="split-text">Get Started</span>
+                    <span class="split-icon"><i class="fas fa-plus"></i></span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <header class="hero-header">
+        <div class="header-bg"></div>
+        <!-- Particle canvas container -->
+        <canvas id="particleCanvas"
+            style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;"></canvas>
+        <div class="container" style="position:relative; z-index:2;">
+            <div class="mask-wrapper" style="overflow:visible;">
+                <h1 class="block-reveal-wrapper">
+                    <span class="block-reveal-text">Secure Your Crypto Legacy</span>
+                </h1>
+            </div>
+            <div class="mask-wrapper">
+                <p class="tagline mask-reveal delay-1">Decentralized asset recovery for the blockchain era. Ensure your
+                    digital wealth is never lost, even when you're gone.</p>
+            </div>
+            <div class="mask-wrapper">
+                <div class="mask-reveal delay-2">
+                    <a href="#how-it-works" class="btn btn-outline" style="border-radius: 0;">How It Works</a>
+                    <a href="/user/register" class="btn btn-primary" style="background:var(--primary); color:#111;">Start Protecting Today</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="motto animate delay-2">
+        <div class="container">
+            <div class="motto-box">
+                <div class="motto-text">Your Keys, Your Assets,<br>Always Protected</div>
+                <p class="motto-subtext">SecureChain provides the missing link in cryptocurrency ownership - a
+                    trustless,
+                    decentralized solution to ensure your digital assets reach your intended beneficiaries, no matter
+                    what
+                    happens.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="section">
+            <div class="section-title animate">
+                <div class="mask-wrapper" style="overflow:visible; display:block; margin-bottom:16px;">
+                    <h2 class="block-reveal-wrapper"><span class="block-reveal-text">Why Decentralized Recovery Matters</span></h2>
+                </div>
+                <div class="mask-wrapper" style="display:block;">
+                    <p class="mask-reveal delay-1">Traditional recovery methods fail in the world of cryptocurrency. Without proper planning,
+                    billions
+                    in digital assets are lost forever every year.</p>
+                </div>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card animate delay-1">
+                    <div class="feature-icon"><i class="fas fa-shield-alt" style="color:var(--primary);"></i></div>
+                    <h3>Self-Sovereign Protection</h3>
+                    <p>Maintain complete control over your assets while setting up automated recovery protocols. No
+                        third party ever holds your keys - they remain encrypted until specific conditions are met.
+                    </p>
+                </div>
+
+                <div class="feature-card animate delay-2">
+                    <div class="feature-icon"><i class="fas fa-lock" style="color:var(--secondary);"></i></div>
+                    <h3>Military-Grade Security</h3>
+                    <p>Your credentials are encrypted using advanced cryptographic techniques and stored across
+                        decentralized networks. Even we can't access your data - the system is completely trustless.
+                    </p>
+                </div>
+
+                <div class="feature-card animate delay-3">
+                    <div class="feature-icon"><i class="fas fa-chart-line" style="color:var(--accent);"></i></div>
+                    <h3>Blockchain Native</h3>
+                    <p>Built from the ground up for the decentralized world. Our smart contracts are open-source and
+                        audited, running autonomously on Ethereum and other major blockchains.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-section">
+        <div class="stats-bg"></div>
+        <div class="stats-container">
+            <h2 class="stats-title animate">
+                <span class="block-reveal-wrapper"><span class="block-reveal-text">The Staggering Cost of Lost Crypto</span></span>
+            </h2>
+
+            <div class="stats-grid">
+                <div class="stat-item animate delay-1">
+                    <div class="stats-number">$100B+</div>
+                    <div class="stats-text">worth of cryptocurrency lost forever due to inaccessible wallets</div>
+                </div>
+
+                <div class="stat-item animate delay-2">
+                    <div class="stats-number">20%</div>
+                    <div class="stats-text">of all Bitcoin is estimated to be permanently lost</div>
+                </div>
+
+                <div class="stat-item animate delay-3">
+                    <div class="stats-number">4M</div>
+                    <div class="stats-text">Bitcoins (worth ~$150B) haven't moved in over 5 years</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-title animate">
+                <div class="mask-wrapper" style="overflow:visible; display:block; margin-bottom:16px;">
+                    <h2 class="block-reveal-wrapper"><span class="block-reveal-text">How SecureChain Works</span></h2>
+                </div>
+                <div class="mask-wrapper" style="display:block;">
+                    <p class="mask-reveal delay-1">Our decentralized recovery process is simple, secure, and completely automated through smart
+                    contracts.</p>
+                </div>
+            </div>
+
+            <div class="steps-container">
+                <div class="steps-line"></div>
+
+                <div class="step animate delay-1">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Set Up Your Recovery Plan</h3>
+                        <p>Connect your wallet and designate trusted beneficiaries. Choose activation triggers like
+                            time
+                            periods or verification of specific events.</p>
+                        <p>All information is encrypted client-side before being stored on decentralized networks.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="step animate delay-2">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Define Access Conditions</h3>
+                        <p>Configure exactly how and when your beneficiaries can access your assets. Options include
+                            time delays, multi-signature requirements, or verification through decentralized
+                            oracles.
+                        </p>
+                        <p>You remain in full control and can modify conditions at any time.</p>
+                    </div>
+                </div>
+
+                <div class="step animate delay-3">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Automatic, Trustless Execution</h3>
+                        <p>When predefined conditions are met, our smart contracts automatically initiate the
+                            recovery
+                            process without any human intervention.</p>
+                        <p>Beneficiaries receive access through secure, verifiable methods that preserve your
+                            privacy
+                            until the last moment.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="team-section">
+            <div class="section-title animate">
+                <div class="mask-wrapper" style="overflow:visible; display:block; margin-bottom:16px;">
+                    <h2 class="block-reveal-wrapper"><span class="block-reveal-text">Our Team</span></h2>
+                </div>
+                <div class="mask-wrapper" style="display:block;">
+                    <p class="mask-reveal delay-1">Blockchain veterans building the future of digital asset inheritance</p>
+                </div>
+            </div>
+
+            <div class="team-grid">
+                <div class="team-member animate delay-1">
+                    <img src="/images/fif mem.jpg" alt="Alizeh"
+                        onerror="this.src='https://ui-avatars.com/api/?name=Alizeh&background=7B61FF&color=fff'">
+                    <div class="member-name">Alizeh</div>
+                    <div class="member-role">Smart Contract Architect</div>
+                    <div class="member-bio">Former Ethereum core developer with 8+ years experience in decentralized
+                        systems and cryptographic protocols.</div>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+
+                <div class="team-member animate delay-2">
+                    <img src="/images/ceo.jpg" alt="Muhammad Tayyab"
+                        onerror="this.src='https://ui-avatars.com/api/?name=Tayyab&background=00E5FF&color=fff'">
+                    <div class="member-name">Muhammad Tayyab</div>
+                    <div class="member-role">Full Stack Engineer</div>
+                    <div class="member-bio">Specializes in blockchain interfaces and decentralized applications,
+                        with a
+                        focus on security and user experience.</div>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+
+                <div class="team-member animate delay-3">
+                    <img src="/images/sec mem.jpg" alt="Sarah"
+                        onerror="this.src='https://ui-avatars.com/api/?name=Sarah&background=FF6B9D&color=fff'">
+                    <div class="member-name">Sarah</div>
+                    <div class="member-role">UX/UI Designer</div>
+                    <div class="member-bio">Makes complex blockchain technology accessible through intuitive design
+                        and
+                        clear user journeys.</div>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-dribbble"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cta-section">
+        <div class="container">
+            <div class="cta-container">
+                <h2 class="cta-title animate">
+                    <span class="block-reveal-wrapper"><span class="block-reveal-text">Ready to Secure Your Crypto Legacy?</span></span>
+                </h2>
+                <p class="cta-text animate delay-1">Don't let your digital assets disappear. Set up your decentralized
+                    recovery plan in minutes and gain peace of mind knowing your crypto is protected.</p>
+                <a href="/user/register" class="btn btn-white animate delay-2">Get Started Now</a>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-bg"></div>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <a href="#" class="footer-logo">Secure<span>Chain</span></a>
+                    <p>Decentralized asset recovery for the blockchain era. Ensuring your digital wealth is never
+                        lost,
+                        even when you're gone.</p>
+                    <div class="footer-social">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="footer-heading">Product</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">How It Works</a></li>
+                        <li><a href="#">Features</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Supported Chains</a></li>
+                        <li><a href="#">Roadmap</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="footer-heading">Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Smart Contract Audits</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Community</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 class="footer-heading">Company</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Team</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">Press</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 SecureChain. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of
+                        Service</a></p>
+                <p class="code-font" style="margin-top: 10px; font-size: 0.8rem;">Smart Contract Address:
+                    0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+        // Header scroll effect
+        const header = document.getElementById('mainHeader');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Scroll Animation Observer
+        document.addEventListener('DOMContentLoaded', () => {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+
+                        // Trigger block-reveal animations within this element
+                        entry.target.querySelectorAll('.block-reveal-wrapper').forEach(el => {
+                            el.classList.add('animate-in');
+                        });
+
+                        // Trigger mask-reveal animations within this element
+                        entry.target.querySelectorAll('.mask-reveal').forEach(el => {
+                            el.classList.add('visible');
+                        });
+
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.animate').forEach(elem => {
+                observer.observe(elem);
+            });
+
+            // Particles for hero bg
+            const canvas = document.getElementById('particleCanvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                let particles = [];
+
+                function resizeCanvas() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                }
+                resizeCanvas();
+                window.addEventListener('resize', resizeCanvas);
+
+                class Particle {
+                    constructor() {
+                        this.reset();
+                    }
+                    reset() {
+                        this.x = Math.random() * canvas.width;
+                        this.y = Math.random() * canvas.height;
+                        this.size = Math.random() * 2 + 0.5;
+                        this.speedX = (Math.random() - 0.5) * 0.3;
+                        this.speedY = (Math.random() - 0.5) * 0.3;
+                        this.opacity = Math.random() * 0.4 + 0.1;
+                        this.color = Math.random() > 0.5 ? '0, 240, 255' : '58, 134, 255';
+                    }
+                    update() {
+                        this.x += this.speedX;
+                        this.y += this.speedY;
+                        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) {
+                            this.reset();
+                        }
+                    }
+                    draw() {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fillStyle = `rgba(${this.color}, ${this.opacity})`;
+                        ctx.fill();
+                    }
+                }
+
+                for (let i = 0; i < 40; i++) {
+                    particles.push(new Particle());
+                }
+
+                function drawConnections() {
+                    for (let i = 0; i < particles.length; i++) {
+                        for (let j = i + 1; j < particles.length; j++) {
+                            const dx = particles[i].x - particles[j].x;
+                            const dy = particles[i].y - particles[j].y;
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist < 150) {
+                                ctx.beginPath();
+                                ctx.moveTo(particles[i].x, particles[i].y);
+                                ctx.lineTo(particles[j].x, particles[j].y);
+                                ctx.strokeStyle = `rgba(0, 240, 255, ${0.05 * (1 - dist / 150)})`;
+                                ctx.lineWidth = 0.5;
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                }
+
+                function animateParticles() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    particles.forEach(p => {
+                        p.update();
+                        p.draw();
+                    });
+                    drawConnections();
+                    requestAnimationFrame(animateParticles);
+                }
+                animateParticles();
+            }
+        });
+
+        // Mouse glow tracking effect
+        document.addEventListener('mousemove', (e) => {
+            const glow = document.getElementById('mouseGlow');
+            if (glow) {
+                glow.style.left = e.clientX + 'px';
+                glow.style.top = e.clientY + 'px';
+                glow.style.opacity = '1';
+            }
+        });
+
+        document.addEventListener('mouseleave', () => {
+            const glow = document.getElementById('mouseGlow');
+            if (glow) glow.style.opacity = '0';
+        });
+    </script>
+    <script src="/js/page-transition.js"></script>
+</body>
+
+</html>

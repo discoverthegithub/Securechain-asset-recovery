@@ -1,0 +1,133 @@
+/* ============================================
+   GOODFELLAS PAGE TRANSITION
+   Dramatic multi-panel wipe animation
+   ============================================ */
+
+.gf-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.gf-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transform: translateX(-100%);
+    will-change: transform;
+}
+
+.gf-panel-1 {
+    background: #FF4A1C;
+    z-index: 3;
+}
+
+.gf-panel-2 {
+    background: #D93B12;
+    z-index: 2;
+}
+
+.gf-panel-3 {
+    background: #0a0a0a;
+    z-index: 1;
+}
+
+/* --- ENTER: panels sweep in from left to cover screen --- */
+.gf-transition-overlay.gf-enter .gf-panel-1 {
+    animation: gfSlideIn 0.45s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+    animation-delay: 0s;
+}
+
+.gf-transition-overlay.gf-enter .gf-panel-2 {
+    animation: gfSlideIn 0.45s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+    animation-delay: 0.08s;
+}
+
+.gf-transition-overlay.gf-enter .gf-panel-3 {
+    animation: gfSlideIn 0.45s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+    animation-delay: 0.16s;
+}
+
+/* --- EXIT: panels sweep out to the right --- */
+.gf-transition-overlay.gf-exit .gf-panel-1 {
+    transform: translateX(0);
+    animation: gfSlideOut 0.45s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+    animation-delay: 0.16s;
+}
+
+.gf-transition-overlay.gf-exit .gf-panel-2 {
+    transform: translateX(0);
+    animation: gfSlideOut 0.45s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+    animation-delay: 0.08s;
+}
+
+.gf-transition-overlay.gf-exit .gf-panel-3 {
+    transform: translateX(0);
+    animation: gfSlideOut 0.45s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+    animation-delay: 0s;
+}
+
+@keyframes gfSlideIn {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(0); }
+}
+
+@keyframes gfSlideOut {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(100%); }
+}
+
+/* Subtle branding flash in the middle of the transition */
+.gf-brand {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 4;
+    opacity: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.gf-brand-icon {
+    font-size: 32px;
+    color: #0a0a0a;
+}
+
+.gf-brand-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    color: #0a0a0a;
+    letter-spacing: -0.5px;
+    text-transform: uppercase;
+}
+
+.gf-transition-overlay.gf-enter .gf-brand {
+    animation: gfBrandFlash 0.8s 0.25s ease forwards;
+}
+
+@keyframes gfBrandFlash {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    30% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    70% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.05); }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .gf-panel,
+    .gf-brand {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0ms !important;
+    }
+}
