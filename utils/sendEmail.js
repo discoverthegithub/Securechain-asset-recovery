@@ -1,27 +1,13 @@
-const nodemailer = require('nodemailer');
-
-let transporter = null;
-
-function getTransporter() {
-  if (!transporter) {
-    transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
-      }
-    });
-  }
-  return transporter;
-}
+const { Resend } = require('resend');
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function sendAssetEmail(to, subject, text) {
   try {
-    await getTransporter().sendMail({
-      from: `Secure Chain <${process.env.EMAIL_USER}>`,
+    await resend.emails.send({
+      from: 'onboarding@resend.dev', // Or your verified sender from Resend
       to,
       subject,
-      text
+      html: `<pre>${text}</pre>` // Use HTML for better formatting
     });
     console.log(`Email sent to ${to} with subject: ${subject}`);
   } catch (err) {
@@ -30,4 +16,4 @@ async function sendAssetEmail(to, subject, text) {
   }
 }
 
-module.exports = sendAssetEmail; 
+module.exports = sendAssetEmail;
